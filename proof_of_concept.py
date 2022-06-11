@@ -23,10 +23,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 class TwitterScraper:
 
     def __init__(self):
-        self.consumer_key = TWITTER_CONSUMER_KEY
-        self.consumer_secret = TWITTER_CONSUMER_SECRET
-        self.access_key = TWITTER_ACCESS_KEY
-        self.access_secret = TWITTER_ACCESS_SECRET
         self.bearer_token = TWITTER_BEARER_TOKEN
 
     def percentage(self, part, whole):

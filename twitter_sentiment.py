@@ -1,14 +1,22 @@
-from config import TWITTER_BEARER_TOKEN
+from config import TWITTER_BEARER_TOKEN, DB, PW, HOST, USER, PORT
 import re, string
 import tweepy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import numpy as np
 from textblob import TextBlob
+import pandas as pd
+from datetime import datetime
+import psycopg2
 
 class TwitterSentiment:
 
     def __init__(self):
         self.bearer_token = TWITTER_BEARER_TOKEN
+        self.database = DB, 
+        self.user = USER, 
+        self.password = PW, 
+        self.host = HOST, 
+        self.port = PORT
     
     def percentage(self, part, whole):
         return 100 * float(part)/float(whole)
@@ -66,16 +74,49 @@ class TwitterSentiment:
             elif pos == neg:
                 neutral_list.append(tweet.text)
                 neutral += 1
-        #end of for loop, python indents are hella lame sometimes
-        positive = self.percentage(positive, noOfTweets)
-        negative = self.percentage(negative, noOfTweets)
-        neutral = self.percentage(neutral, noOfTweets)
-        polarity = self.percentage(polarity, noOfTweets)
-        positive = format(positive, '.1f')
-        negative = format(negative, '.1f')
-        neutral = format(neutral, '.1f') 
-        avg_compound = np.average(compound_list)  
+        #end of for loop, python indents are hella lame sometimes 
+        avg_compound = np.average(compound_list)
+        
+        #Number of Tweets (Total, Positive, Negative, Neutral)
+        tweet_list = pd.DataFrame(tweet_list)
+        neutral_list = pd.DataFrame(neutral_list)
+        negative_list = pd.DataFrame(negative_list)
+        positive_list = pd.DataFrame(positive_list)
+        self.upload_to_db(len(positive_list), len(negative_list), len(neutral_list), avg_compound, keyword)  
 
-    def upload_to_db(self):
-        pass
-    
+    def upload_to_db(self, positive, negative, neutral, compound, coin):
+        now = datetime.now()
+        print('Coin: ', coin)
+        print('positive number: ', positive)
+        print('negative number: ', negative)
+        print('neutral number: ', neutral)
+        print('average compound: ', compound) 
+        print('time: ', now)
+        
+        # why are my environment variables being loaded as tuples? I have no idea
+        try:
+            conn = psycopg2.connect(
+                database = self.database[0], 
+                user = self.user[0], 
+                password = self.password[0], 
+                host = self.host[0], 
+                port = self.port
+            )
+            cur = conn.cursor()
+            cur.execute('''INSERT INTO sentiment 
+                        (date_created, positive, negative, neutral, compound, coin) 
+                        VALUES (%s, %s, %s, %s, %s, %s)''', 
+                        (now, positive, negative, neutral, compound, coin))
+            conn.commit()
+            conn.close()
+            cur.close()
+        except Exception as e: 
+            print('error with database...', e)
+        
+
+#For testing, main function is run in app.py   
+if __name__ == "__main__":
+    COINS = ['BTC', 'MATIC', 'ETH', 'ADA', 'XLM']
+    twitter = TwitterSentiment()  
+    for coin in COINS:
+        twitter.gather_sentiment(coin, 100)

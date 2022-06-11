@@ -1,8 +1,6 @@
 tweepy
 textblob
-scikit-learn
 nltk
 matplotlib
 pandas
-pycountry
-wordcloud
+psycopg2

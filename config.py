@@ -1,13 +1,12 @@
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
+# uncomment for local development with .env file
+# from dotenv import load_dotenv
+# load_dotenv()
 
-# MY_ENV_VAR = os.getenv('MY_ENV_VAR')
-TWITTER_CONSUMER_KEY = os.getenv('TWITTER_API_KEY')
-TWITTER_CONSUMER_SECRET = os.getenv('TWITTER_API_SECRET')
-TWITTER_ACCESS_KEY = os.getenv('TWITTER_ACCESS_KEY')
-TWITTER_ACCESS_SECRET = os.getenv('TWITTER_ACCESS_SECRET')
 TWITTER_BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
-REDDIT_PERSONAL_USE_SCRIPT = os.getenv('REDDIT_PERSONAL_USE_SCRIPT')
-REDDIT_SECRET_KEY = os.getenv('REDDIT_SECRET_KEY')
+DB = os.getenv('DB')
+USER = os.getenv('USER')
+PW = os.getenv('PW')
+HOST= os.getenv('HOST')
+PORT = os.getenv('PORT')
