@@ -7,3 +7,6 @@ to push to ECR
 docker build -t gathersentiment .
 docker tag gathersentiment:latest 708357095774.dkr.ecr.us-east-1.amazonaws.com/gathersentiment:latest
 docker push 708357095774.dkr.ecr.us-east-1.amazonaws.com/gathersentiment:latest
+
+to run API locally
+uvicorn api:app --reload
